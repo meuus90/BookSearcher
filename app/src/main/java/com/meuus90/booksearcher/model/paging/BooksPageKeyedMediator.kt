@@ -1,4 +1,4 @@
-package com.meuus90.booksearcher.model.paging.book
+package com.meuus90.booksearcher.model.paging
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -21,14 +21,22 @@ class BooksPageKeyedMediator(
     private val bookSchema: BookRequest
 ) : RemoteMediator<Int, BookItem>() {
     private val postDao: BookDao = db.bookDao()
+    var loadKey = 0
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, BookItem>
     ): MediatorResult {
+        Timber.e("BooksPageKeyedMediator loadType : $loadType")
+        Timber.e("BooksPageKeyedMediator loadKey : ${loadKey}")
+
         return try {
-            val loadKey = when (loadType) {
+            loadKey = when (loadType) {
                 LoadType.REFRESH -> {
+                    db.withTransaction {
+                        postDao.clear()
+                    }
+
                     1
                 }
                 LoadType.PREPEND -> {
@@ -38,7 +46,7 @@ class BooksPageKeyedMediator(
                     state.lastItemOrNull()
                         ?: return MediatorResult.Success(endOfPaginationReached = true)
 
-                    state.pages.size + 1
+                    loadKey + 1
                 }
             }
 
