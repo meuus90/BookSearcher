@@ -2,10 +2,14 @@ package com.meuus90.booksearcher.di.module
 
 import android.app.Application
 import android.content.Context
+import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.meuus90.booksearcher.BuildConfig
+import com.meuus90.booksearcher.base.arch.util.livedata.LiveDataCallAdapterFactory
 import com.meuus90.booksearcher.base.arch.util.network.entity.NetworkError
+import com.meuus90.booksearcher.model.data.source.api.DaumAPI
+import com.meuus90.booksearcher.model.data.source.local.Cache
 import com.orhanobut.logger.Logger
 import dagger.Module
 import dagger.Provides
@@ -16,6 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -136,4 +142,28 @@ class AppModule {
 
         }
     }
+
+    @Singleton
+    @Provides
+    fun provideDaumAPI(gson: Gson, okHttpClient: OkHttpClient): DaumAPI {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.daumApiServer)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .client(okHttpClient)
+            .build()
+
+        return retrofit.create(DaumAPI::class.java)
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideCache(app: Application) =
+        Room.databaseBuilder(app, Cache::class.java, "daum_book_search.db")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Singleton
+    @Provides
+    internal fun provideBookModelDao(cache: Cache) = cache.bookDao()
 }
