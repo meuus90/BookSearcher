@@ -1,4 +1,4 @@
-package com.meuus.booksearcher
+package com.meuus90.booksearcher
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

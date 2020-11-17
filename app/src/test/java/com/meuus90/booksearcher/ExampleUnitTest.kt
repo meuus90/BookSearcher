@@ -1,4 +1,4 @@
-package com.meuus.booksearcher
+package com.meuus90.booksearcher
 
 import org.junit.Test
 
