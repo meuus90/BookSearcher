@@ -1,53 +1,22 @@
 package com.meuus90.booksearcher.model.schema.book
 
+import com.meuus90.booksearcher.R
+
 data class BookRequest(
-    var query: String,
-    var sort: String?,
-    var target: String?,
-    val size: Int?,
-    var refreshCount: Int
+    var query: String = "",
+    var sort: SortType = SortType.accuracy,
+    var target: TargetType = TargetType.all,
 ) {
-
-    companion object {
-        const val SORT_ACCURACY = "accuracy"
-        const val SORT_RECENCY = "recency"
-
-        const val TARGET_TITLE = "title"
-        const val TARGET_ISBN = "isbn"
-        const val TARGET_PUBLISHER = "publisher"
-        const val TARGET_PERSON = "person"
+    enum class SortType(val idRes: Int, val textRes: Int) {
+        accuracy(R.id.v_doc_sort_accuracy, R.string.doc_sort_accuracy),
+        recency(R.id.v_doc_sort_recency, R.string.doc_sort_recency);
     }
 
-    fun setQueryStr(searchStr: String): Boolean {
-        val old = query
-        query = searchStr
-
-        return old != query
-    }
-
-    fun setSortType(index: Int): Boolean {
-        val old = sort
-        sort = when (index) {
-            0 -> null
-            1 -> SORT_ACCURACY
-            2 -> SORT_RECENCY
-            else -> null
-        }
-
-        return old != sort
-    }
-
-    fun setSearchTarget(index: Int): Boolean {
-        val old = target
-        target = when (index) {
-            0 -> null
-            1 -> TARGET_TITLE
-            2 -> TARGET_ISBN
-            3 -> TARGET_PUBLISHER
-            4 -> TARGET_PERSON
-            else -> null
-        }
-
-        return old != target
+    enum class TargetType(val idRes: Int, val textRes: Int) {
+        all(R.id.v_search_target_all, R.string.search_target_all),
+        title(R.id.v_search_target_title, R.string.search_target_title),
+        isbn(R.id.v_search_target_isbn, R.string.search_target_isbn),
+        publisher(R.id.v_search_target_publisher, R.string.search_target_publisher),
+        person(R.id.v_search_target_person, R.string.search_target_person);
     }
 }

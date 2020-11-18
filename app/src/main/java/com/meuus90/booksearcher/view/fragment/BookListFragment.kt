@@ -2,9 +2,10 @@ package com.meuus90.booksearcher.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
@@ -15,29 +16,22 @@ import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.base.constant.AppConfig
 import com.meuus90.booksearcher.base.view.BaseFragment
 import com.meuus90.booksearcher.base.view.ext.gone
-import com.meuus90.booksearcher.base.view.ext.hideKeyboard
 import com.meuus90.booksearcher.base.view.ext.show
 import com.meuus90.booksearcher.model.paging.BooksPageKeyedMediator
 import com.meuus90.booksearcher.model.schema.book.BookRequest
-import com.meuus90.booksearcher.view.activity.MainActivity
+import com.meuus90.booksearcher.view.dialog.SearchOptionDialog
 import com.meuus90.booksearcher.view.fragment.adapter.BookListAdapter
 import com.meuus90.booksearcher.viewmodel.book.BooksViewModel
 import kotlinx.android.synthetic.main.fragment_book_list.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import retrofit2.HttpException
-import timber.log.Timber
 import javax.inject.Inject
 
 class BookListFragment : BaseFragment() {
     @Inject
     internal lateinit var bookViewModel: BooksViewModel
 
-    private val mainActivity: MainActivity by lazy {
-        activity as MainActivity
-    }
-
-    val searchSchema = BookRequest("", null, null, AppConfig.remotePagingSize, 0)
+    private var searchSchema = BookRequest()
 
     private var createdView: View? = null
     override fun onCreateView(
@@ -45,35 +39,23 @@ class BookListFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.e("BookListFragment onCreateView")
-
-        if (createdView == null) createdView =
-            inflater.inflate(R.layout.fragment_book_list, container, false)
+        if (createdView == null)
+            createdView = inflater.inflate(R.layout.fragment_book_list, container, false)
         return createdView
     }
 
-    private var isRecyclerViewInitialized = false
-
+    @ExperimentalCoroutinesApi
     @ExperimentalPagingApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Timber.e("BookListFragment onActivityCreated")
-
         initViewsListener()
+        initAdapter()
 
-        if (!isRecyclerViewInitialized) {
-//            initViews()
-            initAdapter()
-
-//            updateBooks()
-            showErrorView(
-                R.drawable.brand_wearefriends3,
-                getString(R.string.network_message_welcome_title),
-                getString(R.string.network_message_welcome_message)
-            )
-
-            isRecyclerViewInitialized = true
-        }
+        showErrorView(
+            0,
+            getString(R.string.network_message_welcome_title),
+            getString(R.string.network_message_welcome_message)
+        )
     }
 
     private val adapter = BookListAdapter { item, sharedView ->
@@ -94,6 +76,48 @@ class BookListFragment : BaseFragment() {
 //        newFragment.sharedElementReturnTransition = DetailsTransition()
     }
 
+    private fun initViewsListener() {
+        iv_filter.setOnClickListener {
+//            recyclerView.smoothScrollToPosition(0)
+            val dialog =
+                SearchOptionDialog(searchSchema.copy()) { schema ->
+                    if (searchSchema != schema) {
+                        this.searchSchema = schema
+                        updateBooks()
+                    }
+                }
+            dialog.show(childFragmentManager, "SearchOptionDialog")
+        }
+
+        iv_search.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+            updateBooks()
+        }
+
+        et_search.setOnClickListener {
+            appbar_search.setExpanded(true)
+        }
+
+        et_search.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                updateBooks()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun updateBooks() {
+        hideKeyboard()
+
+        et_search.text?.trim().toString().let {
+            searchSchema.query = it
+            bookViewModel.postBookSchema(searchSchema)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
     @ExperimentalPagingApi
     private fun initAdapter() {
         recyclerView.adapter = adapter
@@ -107,32 +131,23 @@ class BookListFragment : BaseFragment() {
         recyclerView.layoutManager = layoutManager
 
         lifecycleScope.launchWhenCreated {
-            adapter.loadStateFlow
-                .collectLatest { loadStates ->
-                    swipeRefreshLayout.isRefreshing =
-                        loadStates.refresh is LoadState.Loading && adapter.itemCount < 1
-//                recyclerView.scrollToPosition(0)
-                }
-        }
-
-        lifecycleScope.launchWhenCreated {
             bookViewModel.books
                 .collectLatest {
-                    recyclerView.show()
-                    v_error.gone()
-
                     adapter.submitData(it)
-
-                    Timber.e("BookListFragment distinctUntilChangedBy adapter.submitData")
                 }
         }
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow
-                .distinctUntilChangedBy { it.append }
-//                .filter { it.refresh is LoadState.Error }
+//                .distinctUntilChangedBy { it.append }
                 .collectLatest {
-                    val state = it.append
+                    val state = it.refresh
+
+                    if (state is LoadState.Loading)
+                        v_loading.show()
+                    else
+                        v_loading.gone()
+
                     if (state is LoadState.Error)
                         updateErrorUI(state)
                     else {
@@ -143,156 +158,21 @@ class BookListFragment : BaseFragment() {
         }
     }
 
-//    private fun initViews() {
-//        val sortItems = resources.getStringArray(R.array.doc_sort)
-//        spinner_sort.adapter =
-//            ArrayAdapter(context, R.layout.item_spinner, sortItems)
-//
-//        val targetItems = resources.getStringArray(R.array.search_target)
-//        spinner_target.adapter =
-//            ArrayAdapter(context, R.layout.item_spinner, targetItems)
-//    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initViewsListener() {
-        iv_home.setOnClickListener {
-            recyclerView.smoothScrollToPosition(0)
-        }
-
-        iv_search.setOnClickListener {
-            recyclerView.smoothScrollToPosition(0)
-            updateBooks()
-        }
-
-        et_search.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                updateBooks()
-                true
-            } else {
-                false
-            }
-        }
-
-        et_search.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                updateBooks()
-                true
-            } else {
-                false
-            }
-        }
-
-//        spinner_sort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(
-//                parent: AdapterView<*>?,
-//                view: View?,
-//                position: Int,
-//                id: Long
-//            ) {
-//                // sort param is not working for kakao api
-//
-//                val isChanged = searchSchema.setSortType(position)
-//
-//                if (isChanged)
-//                    updateBooks()
-//            }
-//
-//            override fun onNothingSelected(parent: AdapterView<*>?) {
-//            }
-//        }
-//
-//        spinner_target.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//            override fun onItemSelected(
-//                parent: AdapterView<*>?,
-//                view: View?,
-//                position: Int,
-//                id: Long
-//            ) {
-//                val isChanged = searchSchema.setSearchTarget(position)
-//
-//                if (isChanged)
-//                    updateBooks()
-//            }
-//
-//            override fun onNothingSelected(parent: AdapterView<*>?) {
-//            }
-//        }
-
-        recyclerView.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_MOVE)
-                et_search.hideKeyboard()
-            false
-        }
-
-        et_search.setOnClickListener {
-            appbar_search.setExpanded(true)
-        }
-
-        swipeRefreshLayout.setOnRefreshListener {
-            updateBooks(++searchSchema.refreshCount)
-        }
-
-        et_search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                s?.let {
-                    updateBooksByDebounce()
-                }
-            }
-        })
-    }
-
-    private var initialized = false
-
     @ExperimentalPagingApi
     private fun updateErrorUI(state: LoadState.Error) {
         val error = state.error
         if (error is BooksPageKeyedMediator.EmptyResultException) {
             showErrorView(
-                R.drawable.brand_wearefriends4,
+                R.drawable.ic_warning,
                 getString(
                     R.string.network_message_no_item_title,
                     searchSchema.query
                 ),
                 getString(R.string.network_message_no_item_message)
             )
-        } else if (error is HttpException) {
-            val bodyStr = error.response()?.errorBody()?.string()
-            val networkError = parseToNetworkError(bodyStr)
-
-//            Timber.e(error)
-            Timber.e(bodyStr)
-
-            if (networkError.isMissingParameter()) {
-                if (!initialized) {
-                    showErrorView(
-                        R.drawable.brand_wearefriends3,
-                        getString(R.string.network_message_welcome_title),
-                        getString(R.string.network_message_welcome_message)
-                    )
-                    initialized = true
-                } else {
-                    showErrorView(
-                        R.drawable.brand_wearefriends4,
-                        getString(R.string.network_message_no_item_title, ""),
-                        getString(R.string.network_message_no_item_message)
-                    )
-                }
-            } else {
-                showErrorView(
-                    R.drawable.brand_wearefriends7,
-                    networkError.message,
-                    getString(R.string.network_message_error_message)
-                )
-            }
         } else {
             showErrorView(
-                R.drawable.brand_wearefriends7,
+                R.drawable.ic_error,
                 getString(R.string.network_message_error_title),
                 getString(R.string.network_message_error_message)
             )
@@ -300,32 +180,13 @@ class BookListFragment : BaseFragment() {
         }
     }
 
-    private fun updateBooksByDebounce() {
-        Timber.e("BookListFragment updatedBooksFromInput")
-
-        et_search.text?.trim().toString().let {
-            searchSchema.query = it
-            bookViewModel.postBookSchemaWithDebounce(searchSchema)
-        }
-    }
-
-    private fun updateBooks(refreshCount: Int = 0) {
-        Timber.e("BookListFragment updatedBooksFromInput")
-        hideKeyboard()
-
-        et_search.text?.trim().toString().let {
-            searchSchema.refreshCount = refreshCount
-            searchSchema.query = it
-            bookViewModel.postBookSchema(searchSchema)
-        }
-    }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun showErrorView(drawableResId: Int, title: String, message: String) {
         recyclerView.gone()
-        v_error.show()
-        iv_error.setImageDrawable(context.getDrawable(drawableResId))
+        if (drawableResId != 0)
+            iv_error.setImageDrawable(context.getDrawable(drawableResId))
         tv_error_title.text = title
         tv_error_message.text = message
+        v_error.show()
     }
 }

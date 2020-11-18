@@ -5,6 +5,9 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.google.gson.Gson
+import com.meuus90.booksearcher.base.arch.util.network.entity.NetworkError
+import com.meuus90.booksearcher.base.constant.AppConfig
 import com.meuus90.booksearcher.model.data.source.api.DaumAPI
 import com.meuus90.booksearcher.model.data.source.local.Cache
 import com.meuus90.booksearcher.model.data.source.local.book.BookDao
@@ -21,14 +24,14 @@ class BooksPageKeyedMediator(
     private val bookSchema: BookRequest
 ) : RemoteMediator<Int, BookItem>() {
     private val postDao: BookDao = db.bookDao()
-    var loadKey = 0
+    private var loadKey = 0
 
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, BookItem>
     ): MediatorResult {
         Timber.e("BooksPageKeyedMediator loadType : $loadType")
-        Timber.e("BooksPageKeyedMediator loadKey : ${loadKey}")
+        Timber.e("BooksPageKeyedMediator loadKey : $loadKey")
 
         return try {
             loadKey = when (loadType) {
@@ -52,9 +55,9 @@ class BooksPageKeyedMediator(
 
             val response = daumAPI.getBookListSus(
                 query = bookSchema.query,
-                sort = bookSchema.sort,
-                target = bookSchema.target,
-                size = bookSchema.size,
+                sort = bookSchema.sort.name,
+                target = bookSchema.target.name,
+                size = AppConfig.remotePagingSize,
                 page = loadKey
             )
 
@@ -67,16 +70,39 @@ class BooksPageKeyedMediator(
 
             MediatorResult.Success(endOfPaginationReached = response.meta.is_end)
         } catch (e: IOException) {
+            db.withTransaction {
+                postDao.clear()
+            }
             Timber.e(e)
             MediatorResult.Error(e)
         } catch (e: HttpException) {
+            db.withTransaction {
+                postDao.clear()
+            }
             Timber.e(e)
-            MediatorResult.Error(e)
+            MediatorResult.Error(parseToNetworkError(e))
         } catch (e: Exception) {
+            db.withTransaction {
+                postDao.clear()
+            }
             Timber.e(e)
             MediatorResult.Error(e)
         }
     }
 
-    class EmptyResultException() : Exception()
+    private fun parseToNetworkError(e: HttpException): Exception {
+        val errMsg = e.response()?.errorBody()?.string()
+        errMsg?.let { message ->
+            try {
+                val networkError = Gson().fromJson(message, NetworkError::class.java)
+                if (networkError.isMissingParameter())
+                    return EmptyResultException()
+            } catch (e: Exception) {
+
+            }
+        }
+        return e
+    }
+
+    class EmptyResultException : Exception()
 }
