@@ -83,7 +83,6 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
                 Glide.with(context).asDrawable().clone()
                     .load(item.thumbnail)
                     .placeholder(placeholderResList[position % placeholderResList.size])
-                    .centerCrop()
                     .dontAnimate()
                     .into(iv_thumbnail)
 
@@ -92,11 +91,13 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
 
                 tv_title.text = item.title
 
-                tv_author.text = item.authors.joinToString()
-                tv_publisher.text = item.publisher
                 tv_date.text = TimeTools.convertDateFormat(item.datetime, ISO8601, YMD)
-                tv_price.text = NumberTools.convertToString(item.price)
-                tv_status.text = item.status
+
+                iv_thumbs_up.isSelected = item.thumbsUp
+
+                tv_desc.text = item.contents
+
+                tv_price.text = NumberTools.convertToString(item.sale_price)
 
                 v_root.setOnClickListener {
                     adapter.doOnClick(item, iv_thumbnail)

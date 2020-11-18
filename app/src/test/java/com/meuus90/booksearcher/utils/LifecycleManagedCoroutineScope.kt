@@ -6,7 +6,7 @@ import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
 class LifecycleManagedCoroutineScope(
-    val lifecycleCoroutineScope: LifecycleCoroutineScope,
+    private val lifecycleCoroutineScope: LifecycleCoroutineScope,
     override val coroutineContext: CoroutineContext
 ) : ManagedCoroutineScope {
     override fun launch(block: suspend CoroutineScope.() -> Unit): Job =

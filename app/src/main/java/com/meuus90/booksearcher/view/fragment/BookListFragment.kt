@@ -2,6 +2,8 @@ package com.meuus90.booksearcher.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.base.constant.AppConfig
+import com.meuus90.booksearcher.base.view.BaseActivity.Companion.BACK_STACK_STATE_ADD
 import com.meuus90.booksearcher.base.view.BaseFragment
 import com.meuus90.booksearcher.base.view.ext.gone
 import com.meuus90.booksearcher.base.view.ext.show
+import com.meuus90.booksearcher.base.view.util.DetailsTransition
+import com.meuus90.booksearcher.base.view.util.autoCleared
 import com.meuus90.booksearcher.model.paging.BooksPageKeyedMediator
 import com.meuus90.booksearcher.model.schema.book.BookRequest
 import com.meuus90.booksearcher.view.dialog.SearchOptionDialog
@@ -25,55 +30,63 @@ import com.meuus90.booksearcher.viewmodel.book.BooksViewModel
 import kotlinx.android.synthetic.main.fragment_book_list.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import javax.inject.Inject
 
 class BookListFragment : BaseFragment() {
+    var acvView by autoCleared<View>()
+
     @Inject
     internal lateinit var bookViewModel: BooksViewModel
 
     private var searchSchema = BookRequest()
 
-    private var createdView: View? = null
+    private var isInitialized = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (createdView == null)
-            createdView = inflater.inflate(R.layout.fragment_book_list, container, false)
-        return createdView
+        acvView = inflater.inflate(R.layout.fragment_book_list, container, false)
+
+        return acvView
     }
 
     @ExperimentalCoroutinesApi
     @ExperimentalPagingApi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initViewsListener()
-        initAdapter()
+        if (!isInitialized) {
+            isInitialized = true
+            initViewsListener()
+            initAdapter()
 
-        showErrorView(
-            0,
-            getString(R.string.network_message_welcome_title),
-            getString(R.string.network_message_welcome_message)
-        )
+            showErrorView(
+                0,
+                getString(R.string.network_message_welcome_title),
+                getString(R.string.network_message_welcome_message)
+            )
+        } else {
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private val adapter = BookListAdapter { item, sharedView ->
         val bundle = Bundle()
         bundle.putParcelable("KEY_BOOK", item)
 
-//        val newFragment = addFragment(
-//            BookDetailFragment::class.java,
-//            BACK_STACK_STATE_ADD,
-//            bundle,
-//            sharedView,
-//            false
-//        )
+        val newFragment = addFragment(
+            BookDetailFragment::class.java,
+            BACK_STACK_STATE_ADD,
+            bundle,
+            sharedView
+        )
 
-//        newFragment.sharedElementEnterTransition = DetailsTransition()
-//        newFragment.enterTransition = null
-//        exitTransition = null
-//        newFragment.sharedElementReturnTransition = DetailsTransition()
+        newFragment.sharedElementEnterTransition = DetailsTransition()
+        newFragment.enterTransition = TransitionSet().addTransition(Fade(Fade.IN))
+        exitTransition = TransitionSet().addTransition(Fade(Fade.OUT))
+        newFragment.sharedElementReturnTransition = DetailsTransition()
     }
 
     private fun initViewsListener() {
@@ -139,7 +152,7 @@ class BookListFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow
-//                .distinctUntilChangedBy { it.append }
+                .distinctUntilChangedBy { it.append }
                 .collectLatest {
                     val state = it.refresh
 

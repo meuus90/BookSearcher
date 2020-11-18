@@ -7,11 +7,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.annotation.GlideModule
-import com.meuus90.booksearcher.R
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import javax.inject.Inject
@@ -96,8 +94,6 @@ abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector {
         supportFragmentManager.beginTransaction()
             .setReorderingAllowed(true)
             .apply {
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
                 addToBackStack(fragment.javaClass.name)
 
                 if (sharedView != null)
@@ -122,12 +118,10 @@ abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector {
         val fragment = getCurrentFragment()
         if (fragment != null) {
             val fragmentStackSize = supportFragmentManager.backStackEntryCount
-            if (fragmentStackSize <= 1) {
-//                supportFragmentManager.popBackStack()
+            if (fragmentStackSize <= 1)
                 supportFinishAfterTransition()
-            } else
+            else
                 supportFragmentManager.popBackStack()
-//                super.onBackPressed()
 
         } else {
             super.onBackPressed()

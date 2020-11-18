@@ -25,5 +25,5 @@ data class BookItem(
     @field:ColumnInfo(name = "sale_price") val sale_price: BigDecimal,
     @field:ColumnInfo(name = "thumbnail") val thumbnail: String,
     @field:ColumnInfo(name = "status") val status: String,
-    var thumbsUp:Boolean?=null
+    @field:ColumnInfo(name = "thumbsUp", defaultValue = "false") var thumbsUp: Boolean
 ) : BaseSchema(), Parcelable

@@ -1,6 +1,7 @@
 package com.meuus90.booksearcher.utils
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
@@ -8,8 +9,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-import kotlin.jvm.Throws
 
+@ExperimentalCoroutinesApi
 class CoroutineTestRule : TestRule, TestCoroutineScope by TestCoroutineScope() {
     override val coroutineContext = TestCoroutineDispatcher()
     val managedCoroutineScope: ManagedCoroutineScope = TestScope(coroutineContext)
@@ -19,7 +20,7 @@ class CoroutineTestRule : TestRule, TestCoroutineScope by TestCoroutineScope() {
     override fun apply(
         base: Statement, description: Description?
     ) = object : Statement() {
-        @Throws(Throwable::class)
+        //        @Throws(Throwable::class)
         override fun evaluate() {
             Dispatchers.setMain(coroutineContext)
 
