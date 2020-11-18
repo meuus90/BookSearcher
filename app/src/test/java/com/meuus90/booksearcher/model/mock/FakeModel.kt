@@ -21,7 +21,7 @@ object FakeModel {
         sale_price = 13410.toBigDecimal(),
         thumbnail = "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038",
         status = "정상판매",
-        thumbsUp = null
+        thumbsUp = false
     )
 
     val mockBookList = mutableListOf(
@@ -42,7 +42,7 @@ object FakeModel {
             sale_price = 13410.toBigDecimal(),
             thumbnail = "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038",
             status = "정상판매",
-            thumbsUp = null
+            thumbsUp = false
         ),
         BookItem(
             databaseId = 1,
@@ -61,7 +61,7 @@ object FakeModel {
             sale_price = 13410.toBigDecimal(),
             thumbnail = "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038",
             status = "정상판매",
-            thumbsUp = null
+            thumbsUp = false
         ),
         BookItem(
             databaseId = 2,
@@ -80,7 +80,7 @@ object FakeModel {
             sale_price = 13410.toBigDecimal(),
             thumbnail = "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038",
             status = "정상판매",
-            thumbsUp = null
+            thumbsUp = false
         )
     )
 
