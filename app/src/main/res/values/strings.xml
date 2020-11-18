@@ -4,9 +4,11 @@
     <string name="title_book">책 검색</string>
     <string name="book_search">검색</string>
 
+    <string name="title_doc_sort">정렬</string>
     <string name="doc_sort_accuracy">정확도순</string>
     <string name="doc_sort_recency">최신순</string>
 
+    <string name="title_search_target">필터</string>
     <string name="search_target_all">전체</string>
     <string name="search_target_title">제목</string>
     <string name="search_target_isbn">ISBN</string>
@@ -21,6 +23,8 @@
     <string name="book_item_status">상태</string>
     <string name="book_item_translators">역자</string>
     <string name="book_item_contents">소개</string>
+
+    <string name="dialog_apply">적용</string>
 
     <string name="author_format">%s 지음</string>
     <string name="contents_format">%s…</string>

@@ -13,4 +13,16 @@
 
     <color name="colorEditTextBg">#f6f6f6</color>
     <color name="colorLine">#d7d7d7</color>
+
+    <color name="radio_selected">#F44336</color>
+    <color name="radio_unselected">#D7D7D7</color>
+
+    <color name="overlay_dark_1A">#1A000000</color>
+
+    <color name="placeHolderColor0">#ffccbc</color>
+    <color name="placeHolderColor1">#ffe0b2</color>
+    <color name="placeHolderColor2">#fff9c4</color>
+    <color name="placeHolderColor3">#dcedc8</color>
+    <color name="placeHolderColor4">#b2ebf2</color>
+    <color name="placeHolderColor5">#d1c4e9</color>
 </resources>

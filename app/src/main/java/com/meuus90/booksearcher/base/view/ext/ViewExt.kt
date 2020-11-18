@@ -1,15 +1,12 @@
 package com.meuus90.booksearcher.base.view.ext
 
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 
 fun Window.setSystemBarTextWhite() {
@@ -43,30 +40,6 @@ fun Dialog.setDefaultWindowTheme() {
     }
 }
 
-/**
- * Extension method to show a keyboard for View.
- */
-fun View.showKeyboard() {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    this.requestFocus()
-    imm.showSoftInput(this, 0)
-}
-
-/**
- * Try to hide the keyboard and returns whether it worked
- * https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
- */
-fun View.hideKeyboard() {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-    windowToken?.let {
-        imm.hideSoftInputFromWindow(
-            it,
-            InputMethodManager.HIDE_NOT_ALWAYS
-        )
-    }
-}
-
 fun View.show(): View {
     if (visibility != View.VISIBLE) {
         visibility = View.VISIBLE
@@ -92,14 +65,4 @@ fun View.gone(): View {
         visibility = View.GONE
     }
     return this
-}
-
-fun dpToPx(context: Context, dp: Float): Float {
-    val metrics = context.resources.displayMetrics
-    return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-}
-
-fun pxToDp(context: Context, px: Float): Float {
-    val metrics = context.resources.displayMetrics
-    return px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }

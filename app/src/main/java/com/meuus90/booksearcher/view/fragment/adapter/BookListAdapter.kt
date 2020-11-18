@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
+import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.base.common.util.NumberTools
 import com.meuus90.booksearcher.base.common.util.TimeTools
 import com.meuus90.booksearcher.base.common.util.TimeTools.Companion.ISO8601
 import com.meuus90.booksearcher.base.common.util.TimeTools.Companion.YMD
 import com.meuus90.booksearcher.base.view.util.BaseViewHolder
-import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.model.schema.book.BookItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_book.view.*
@@ -63,6 +63,17 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
         override val containerView: View,
         private val adapter: BookListAdapter
     ) : BaseViewHolder<BookItem>(containerView), LayoutContainer {
+        companion object {
+            val placeholderResList = listOf(
+                R.drawable.placeholder0,
+                R.drawable.placeholder1,
+                R.drawable.placeholder2,
+                R.drawable.placeholder3,
+                R.drawable.placeholder4,
+                R.drawable.placeholder5
+            )
+        }
+
         override fun bindItemHolder(
             holder: BaseViewHolder<BookItem>,
             item: BookItem,
@@ -71,12 +82,13 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
             containerView.apply {
                 Glide.with(context).asDrawable().clone()
                     .load(item.thumbnail)
+                    .placeholder(placeholderResList[position % placeholderResList.size])
                     .centerCrop()
                     .dontAnimate()
-//                    .error(R.drawable.no_image)
                     .into(iv_thumbnail)
 
-                iv_thumbnail.transitionName = item.title + item.authors + item.publisher + item.datetime
+                iv_thumbnail.transitionName =
+                    item.title + item.authors + item.publisher + item.datetime
 
                 tv_title.text = item.title
 

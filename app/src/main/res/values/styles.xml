@@ -16,4 +16,23 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="OptionTitleTextView">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="OptionRadioButton">
+        <item name="android:drawableStart">@drawable/ic_radio_unselected</item>
+        <item name="android:drawableTint">@color/selector_radio_button</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="android:textColor">@color/selector_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

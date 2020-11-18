@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
+    tools:background="@color/overlay_dark_1A">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/v_contents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_rounded"
+        android:backgroundTint="@color/colorWhite"
+        android:orientation="vertical"
+        android:padding="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_doc_sort"
+            style="@style/OptionTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/title_doc_sort"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/v_doc_sort_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tv_doc_sort">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_doc_sort_accuracy"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/doc_sort_accuracy" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_doc_sort_recency"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/doc_sort_recency" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_search_target"
+            style="@style/OptionTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/title_search_target"
+            app:layout_constraintTop_toBottomOf="@+id/v_doc_sort_radio_group" />
+
+        <RadioGroup
+            android:id="@+id/v_search_target_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tv_search_target">
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_search_target_all"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_target_all" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_search_target_title"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/search_target_title" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_search_target_isbn"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/search_target_isbn" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_search_target_publisher"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/search_target_publisher" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/v_search_target_person"
+                style="@style/OptionRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/search_target_person" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_apply"
+            style="@style/OptionTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_rounded"
+            android:backgroundTint="@color/colorPrimary"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/dialog_apply"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/v_search_target_radio_group" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
