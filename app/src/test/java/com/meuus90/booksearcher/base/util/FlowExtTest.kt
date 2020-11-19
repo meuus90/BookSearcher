@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.meuus90.booksearcher.base.common.util.customDebounce
-import com.meuus90.booksearcher.utils.CoroutineTestRule
-import com.meuus90.booksearcher.utils.getOrAwaitValue
+import com.meuus90.booksearcher.test_util_kit.CoroutineTestRule
+import com.meuus90.booksearcher.test_util_kit.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi

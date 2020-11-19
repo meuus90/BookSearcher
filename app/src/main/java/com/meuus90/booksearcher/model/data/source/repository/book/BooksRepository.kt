@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BooksRepository
+open class BooksRepository
 @Inject
 constructor(private val db: Cache, private val daumAPI: DaumAPI) :
     PagingDataInterface<BookRequest, Flow<PagingData<BookItem>>> {
@@ -39,5 +39,5 @@ constructor(private val db: Cache, private val daumAPI: DaumAPI) :
         db.bookDao().getBooksPagingSource()
     }.flow
 
-    fun clearCache() = runBlocking { db.bookDao().clear() }
+    open fun clearCache() = runBlocking { db.bookDao().clear() }
 }

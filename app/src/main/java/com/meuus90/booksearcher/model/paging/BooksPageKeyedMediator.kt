@@ -17,7 +17,7 @@ import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
 
-@ExperimentalPagingApi
+@OptIn(ExperimentalPagingApi::class)
 class BooksPageKeyedMediator(
     private val db: Cache,
     private val daumAPI: DaumAPI,

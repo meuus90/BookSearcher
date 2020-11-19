@@ -22,9 +22,7 @@ class DetailsTransition : TransitionSet {
     private fun init() {
         ordering = ORDERING_TOGETHER
         addTransition(ChangeBounds())
-            .addTransition(ChangeTransform())
-            .addTransition(
-                ChangeImageTransform()
-            )
+        addTransition(ChangeTransform())
+        addTransition(ChangeImageTransform())
     }
 }

@@ -1,64 +1,41 @@
 package com.meuus90.booksearcher.base.arch.util.livedata
 
-import android.util.ArraySet
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 
-class LiveEvent<T> : MediatorLiveData<T>() {
-    private val observers = ArraySet<ObserverWrapper<in T>>()
+class LiveEvent<T> : MutableLiveData<T>() {
+    private val pending = AtomicBoolean(false)
 
     @MainThread
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
-        val wrapper = ObserverWrapper(observer)
-        observers.add(wrapper)
-        super.observe(owner, wrapper)
-    }
-
-    @MainThread
-    override fun observeForever(observer: Observer<in T>) {
-        val wrapper = ObserverWrapper(observer)
-        observers.add(wrapper)
-        super.observeForever(wrapper)
-    }
-
-    @MainThread
-    override fun removeObserver(observer: Observer<in T>) {
-        if (observers.remove(observer)) {
-            super.removeObserver(observer)
-            return
+        if (hasActiveObservers()) {
+            Timber.w("Multiple observers registered but only one will be notified of changes.")
         }
-        val iterator = observers.iterator()
-        while (iterator.hasNext()) {
-            val wrapper = iterator.next()
-            if (wrapper.observer == observer) {
-                iterator.remove()
-                super.removeObserver(wrapper)
-                break
+
+        // Observe the internal MutableLiveData
+        super.observe(owner, Observer { t ->
+            if (pending.compareAndSet(true, false)) {
+                removeObservers(owner)
+                observer.onChanged(t)
             }
-        }
+        })
     }
 
     @MainThread
     override fun setValue(t: T?) {
-        observers.forEach { it.newValue() }
+        pending.set(true)
         super.setValue(t)
     }
 
-    private class ObserverWrapper<T>(val observer: Observer<T>) : Observer<T> {
-
-        private var pending = false
-
-        override fun onChanged(t: T?) {
-            if (pending) {
-                pending = false
-                observer.onChanged(t)
-            }
-        }
-
-        fun newValue() {
-            pending = true
-        }
+    /**
+     * Used for cases where T is Void, to make calls cleaner.
+     */
+    @MainThread
+    fun call() {
+        value = null
     }
 }

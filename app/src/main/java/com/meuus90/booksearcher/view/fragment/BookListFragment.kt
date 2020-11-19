@@ -3,17 +3,19 @@ package com.meuus90.booksearcher.view.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.transition.Fade
-import android.transition.TransitionSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.Behavior.DragCallback
 import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.base.constant.AppConfig
 import com.meuus90.booksearcher.base.view.BaseActivity.Companion.BACK_STACK_STATE_ADD
@@ -25,16 +27,17 @@ import com.meuus90.booksearcher.base.view.util.autoCleared
 import com.meuus90.booksearcher.model.paging.BooksPageKeyedMediator
 import com.meuus90.booksearcher.model.schema.book.BookRequest
 import com.meuus90.booksearcher.view.dialog.SearchOptionDialog
+import com.meuus90.booksearcher.view.fragment.BookDetailFragment.Companion.KEY_BOOK
 import com.meuus90.booksearcher.view.fragment.adapter.BookListAdapter
 import com.meuus90.booksearcher.viewmodel.book.BooksViewModel
 import kotlinx.android.synthetic.main.fragment_book_list.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import javax.inject.Inject
 
+
 class BookListFragment : BaseFragment() {
-    var acvView by autoCleared<View>()
+    private var acvView by autoCleared<View>()
 
     @Inject
     internal lateinit var bookViewModel: BooksViewModel
@@ -49,16 +52,20 @@ class BookListFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         acvView = inflater.inflate(R.layout.fragment_book_list, container, false)
-
         return acvView
     }
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalPagingApi
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        recyclerView?.doOnPreDraw { startPostponedEnterTransition() }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (!isInitialized) {
             isInitialized = true
+            initAppBar()
             initViewsListener()
             initAdapter()
 
@@ -67,14 +74,15 @@ class BookListFragment : BaseFragment() {
                 getString(R.string.network_message_welcome_title),
                 getString(R.string.network_message_welcome_message)
             )
+
         } else {
             adapter.notifyDataSetChanged()
         }
     }
 
-    private val adapter = BookListAdapter { item, sharedView ->
+    private val adapter = BookListAdapter { position, item, sharedView, thumbsUpView ->
         val bundle = Bundle()
-        bundle.putParcelable("KEY_BOOK", item)
+        bundle.putParcelable(KEY_BOOK, item)
 
         val newFragment = addFragment(
             BookDetailFragment::class.java,
@@ -84,14 +92,25 @@ class BookListFragment : BaseFragment() {
         )
 
         newFragment.sharedElementEnterTransition = DetailsTransition()
-        newFragment.enterTransition = TransitionSet().addTransition(Fade(Fade.IN))
-        exitTransition = TransitionSet().addTransition(Fade(Fade.OUT))
+        newFragment.enterTransition = Fade()
+        exitTransition = Fade()
         newFragment.sharedElementReturnTransition = DetailsTransition()
+    }
+
+    private fun initAppBar() {
+        val layoutParams = appbar_search.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior =
+            layoutParams.behavior as AppBarLayout.Behavior? ?: AppBarLayout.Behavior()
+        behavior.setDragCallback(object : DragCallback() {
+            override fun canDrag(appBarLayout: AppBarLayout): Boolean {
+                return false
+            }
+        })
+        layoutParams.behavior = behavior
     }
 
     private fun initViewsListener() {
         iv_filter.setOnClickListener {
-//            recyclerView.smoothScrollToPosition(0)
             val dialog =
                 SearchOptionDialog(searchSchema.copy()) { schema ->
                     if (searchSchema != schema) {
@@ -130,8 +149,6 @@ class BookListFragment : BaseFragment() {
         }
     }
 
-    @ExperimentalCoroutinesApi
-    @ExperimentalPagingApi
     private fun initAdapter() {
         recyclerView.adapter = adapter
 
@@ -152,26 +169,29 @@ class BookListFragment : BaseFragment() {
 
         lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow
-                .distinctUntilChangedBy { it.append }
+                .distinctUntilChangedBy { it.mediator }
                 .collectLatest {
-                    val state = it.refresh
-
-                    if (state is LoadState.Loading)
+                    if (it.refresh is LoadState.Loading)
                         v_loading.show()
                     else
                         v_loading.gone()
 
-                    if (state is LoadState.Error)
-                        updateErrorUI(state)
-                    else {
-                        recyclerView.show()
-                        v_error.gone()
+                    when {
+                        it.refresh is LoadState.Error -> {
+                            updateErrorUI(it.refresh as LoadState.Error)
+                        }
+                        it.append is LoadState.Error -> {
+                            updateErrorUI(it.append as LoadState.Error)
+                        }
+                        else -> {
+                            recyclerView.show()
+                            v_error.gone()
+                        }
                     }
                 }
         }
     }
 
-    @ExperimentalPagingApi
     private fun updateErrorUI(state: LoadState.Error) {
         val error = state.error
         if (error is BooksPageKeyedMediator.EmptyResultException) {
@@ -189,7 +209,6 @@ class BookListFragment : BaseFragment() {
                 getString(R.string.network_message_error_title),
                 getString(R.string.network_message_error_message)
             )
-
         }
     }
 

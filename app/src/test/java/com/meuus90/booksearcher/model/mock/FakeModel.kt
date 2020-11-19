@@ -1,5 +1,6 @@
 package com.meuus90.booksearcher.model.mock
 
+import androidx.paging.PagingData
 import com.meuus90.booksearcher.model.schema.book.BookItem
 import com.meuus90.booksearcher.model.schema.book.BookResponse
 
@@ -101,4 +102,6 @@ object FakeModel {
         ),
         documents = mutableListOf()
     )
+
+    val mockPagingData = PagingData.from(mockBookList)
 }

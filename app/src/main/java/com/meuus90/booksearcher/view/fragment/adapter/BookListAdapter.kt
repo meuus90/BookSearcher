@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.Glide
 import com.meuus90.booksearcher.R
 import com.meuus90.booksearcher.base.common.util.NumberTools
 import com.meuus90.booksearcher.base.common.util.TimeTools
 import com.meuus90.booksearcher.base.common.util.TimeTools.Companion.ISO8601
 import com.meuus90.booksearcher.base.common.util.TimeTools.Companion.YMD
 import com.meuus90.booksearcher.base.view.util.BaseViewHolder
+import com.meuus90.booksearcher.base.view.util.loadGlideImage
 import com.meuus90.booksearcher.model.schema.book.BookItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_book.view.*
 
-class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit) :
+class BookListAdapter(val doOnClick: (position: Int, item: BookItem, sharedView: View, thumbsUpView: View) -> Unit) :
     PagingDataAdapter<BookItem, BaseViewHolder<BookItem>>(DIFF_CALLBACK) {
     companion object {
         private val PAYLOAD_TITLE = Any()
@@ -63,16 +63,6 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
         override val containerView: View,
         private val adapter: BookListAdapter
     ) : BaseViewHolder<BookItem>(containerView), LayoutContainer {
-        companion object {
-            val placeholderResList = listOf(
-                R.drawable.placeholder0,
-                R.drawable.placeholder1,
-                R.drawable.placeholder2,
-                R.drawable.placeholder3,
-                R.drawable.placeholder4,
-                R.drawable.placeholder5
-            )
-        }
 
         override fun bindItemHolder(
             holder: BaseViewHolder<BookItem>,
@@ -80,14 +70,9 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
             position: Int
         ) {
             containerView.apply {
-                Glide.with(context).asDrawable().clone()
-                    .load(item.thumbnail)
-                    .placeholder(placeholderResList[position % placeholderResList.size])
-                    .dontAnimate()
-                    .into(iv_thumbnail)
+                iv_thumbnail.loadGlideImage(item.thumbnail, item.databaseId)
 
-                iv_thumbnail.transitionName =
-                    item.title + item.authors + item.publisher + item.datetime
+                iv_thumbnail.transitionName = item.databaseId.toString() + item.isbn
 
                 tv_title.text = item.title
 
@@ -97,10 +82,13 @@ class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit)
 
                 tv_desc.text = item.contents
 
-                tv_price.text = NumberTools.convertToString(item.sale_price)
+                tv_price.text = context.getString(
+                    R.string.currency_korean,
+                    NumberTools.convertToString(item.price)
+                )
 
                 v_root.setOnClickListener {
-                    adapter.doOnClick(item, iv_thumbnail)
+                    adapter.doOnClick(position, item, iv_thumbnail, iv_thumbs_up)
                 }
             }
         }

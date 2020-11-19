@@ -26,11 +26,12 @@ constructor(private val repository: BooksRepository) : ViewModel() {
     }
 
     @ExperimentalCoroutinesApi
-    @ExperimentalPagingApi
+    @OptIn(ExperimentalPagingApi::class)
     val books = schemaLiveData.asFlow()
         .flatMapLatest {
             repository.execute(it)
         }
+
 
     fun postBookSchema(bookSchema: BookRequest) {
         schemaLiveData.value = bookSchema

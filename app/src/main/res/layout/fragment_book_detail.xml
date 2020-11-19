@@ -14,7 +14,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/header_h"
             android:background="@color/colorPrimary"
             android:contentInsetStart="0dp"
             android:contentInsetLeft="0dp"
@@ -28,7 +28,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/container_search"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/header_h"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -58,7 +58,6 @@
                     android:id="@+id/iv_thumbs_up"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
                     android:layout_marginEnd="10dp"
                     android:src="@drawable/reactive_thumbs_up"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +70,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@+id/tv_next"
         app:layout_constraintTop_toBottomOf="@+id/appbar_search">
 
@@ -83,20 +81,20 @@
 
             <ImageView
                 android:id="@+id/iv_thumbnail"
-                android:layout_width="116dp"
-                android:layout_height="164dp"
-                android:layout_marginStart="10dp"
-                android:adjustViewBounds="true"
+                android:layout_width="120dp"
+                android:layout_height="174dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@color/placeHolderColor0" />
+                tools:src="@drawable/placeholder0" />
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/colorText"
                 android:textSize="16sp"
@@ -110,44 +108,64 @@
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_title"
                 tools:text="2017.12.05" />
 
             <TextView
+                android:id="@+id/tv_price_key"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/book_item_price"
+                android:textColor="@color/colorText"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+            <TextView
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/colorTextAccent"
                 android:textSize="13sp"
-                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_key"
+                app:layout_constraintTop_toTopOf="@+id/tv_price_key"
+                tools:text="13,500원" />
+
+            <TextView
+                android:id="@+id/tv_publisher_key"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/book_item_publisher"
+                android:textColor="@color/colorText"
+                android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                tools:text="13,500" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_price" />
 
             <TextView
                 android:id="@+id/tv_publisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="sans-serif"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-medium"
                 android:textSize="13sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_price"
+                app:layout_constraintStart_toEndOf="@+id/tv_publisher_key"
+                app:layout_constraintTop_toTopOf="@+id/tv_publisher_key"
                 tools:text="북하우스" />
 
             <TextView
                 android:id="@+id/tv_contents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:textSize="13sp"
                 app:layout_constraintTop_toBottomOf="@+id/tv_publisher"
                 tools:text="KOTRA 상파울루 무역관장 현장 보고 『브라질은 바나나를 닮았다』. 우리가 갖지 못한 것을 갖고 있는 브라질의 체계를 살펴보고 교훈을 얻기 위해 펴낸 책으로, 한국과 닮은 듯 다른 브라질의 다양성과 자원에 대한 심층 분석을 담고 있다. 1장은 저자가 생각하는 체계의 개념과 종류를 담았고 2장에서는 브라질 체계의 형성과 비용을 살펴보았다. 3장에서는 브라질과 한국, 중국, 호주, 이스라엘의 체계와 비교하면서 브라질 체계의 특징을 부각시켰고 4장에서는" />
@@ -165,7 +183,7 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:text="@string/next_web"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

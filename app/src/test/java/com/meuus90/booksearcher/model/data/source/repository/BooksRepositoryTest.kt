@@ -8,7 +8,7 @@ import com.meuus90.booksearcher.model.mock.FakeCache
 import com.meuus90.booksearcher.model.mock.FakeDaumAPI
 import com.meuus90.booksearcher.model.mock.FakeSchema.mockBookSchema
 import com.meuus90.booksearcher.model.schema.book.BookItem
-import com.meuus90.booksearcher.utils.CoroutineTestRule
+import com.meuus90.booksearcher.test_util_kit.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi

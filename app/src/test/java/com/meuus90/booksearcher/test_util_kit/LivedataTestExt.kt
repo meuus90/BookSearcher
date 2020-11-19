@@ -1,4 +1,4 @@
-package com.meuus90.booksearcher.utils
+package com.meuus90.booksearcher.test_util_kit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

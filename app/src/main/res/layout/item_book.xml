@@ -24,9 +24,9 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="58dp"
-            android:layout_height="82dp"
-            android:adjustViewBounds="true"
+            android:layout_width="60dp"
+            android:layout_height="87dp"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/placeHolderColor0" />
@@ -65,10 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-condensed-medium"
             android:textSize="11sp"
-            android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2017.12.05" />
@@ -80,7 +78,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
@@ -99,11 +96,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/radio_selected"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/colorTextAccent"
             android:textSize="13sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
             tools:text="13,500원" />
