@@ -21,12 +21,13 @@ fun ImageView.loadGlideImage(
     onLoadingFinished: () -> Unit = {}
 ) {
     val placeholderResList = listOf(
-        R.drawable.placeholder0,
-        R.drawable.placeholder1,
-        R.drawable.placeholder2,
-        R.drawable.placeholder3,
-        R.drawable.placeholder4,
-        R.drawable.placeholder5
+        R.drawable.placeholder_red,
+        R.drawable.placeholder_orange,
+        R.drawable.placeholder_yellow,
+        R.drawable.placeholder_green,
+        R.drawable.placeholder_blue,
+        R.drawable.placeholder_indigo,
+        R.drawable.placeholder_purple
     )
 
     val listener = object : RequestListener<Drawable> {
@@ -53,6 +54,8 @@ fun ImageView.loadGlideImage(
     }
 
     val placeholderRes = placeholderResList[placeholderId % placeholderResList.size]
+    setBackgroundResource(placeholderRes)
+
     val requestOptions =
         RequestOptions.placeholderOf(placeholderRes)
             .priority(Priority.IMMEDIATE)
@@ -61,6 +64,7 @@ fun ImageView.loadGlideImage(
             .signature(IntegerVersionSignature(BuildConfig.VERSION_CODE))
             .override(Target.SIZE_ORIGINAL)
             .onlyRetrieveFromCache(loadOnlyFromCache)
+
     Glide.with(this)
         .load(url)
         .apply(requestOptions)
@@ -68,5 +72,4 @@ fun ImageView.loadGlideImage(
         .error(R.drawable.shape_no_image)
         .into(this)
 
-    setBackgroundResource(placeholderRes)
 }

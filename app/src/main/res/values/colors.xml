@@ -18,14 +18,14 @@
     <color name="radio_unselected">#757575</color>
 
     <color name="overlay_dark_1A">#1A000000</color>
-    <color name="overlay_text_3A">#3A424242</color>
 
-    <color name="placeHolderColor0">#ffccbc</color>
-    <color name="placeHolderColor1">#ffe0b2</color>
-    <color name="placeHolderColor2">#fff9c4</color>
-    <color name="placeHolderColor3">#dcedc8</color>
-    <color name="placeHolderColor4">#b2ebf2</color>
-    <color name="placeHolderColor5">#d1c4e9</color>
+    <color name="color_placeholder_red">#ffcdd2</color>
+    <color name="color_placeholder_orange">#ffe0b2</color>
+    <color name="color_placeholder_yellow">#fff9c4</color>
+    <color name="color_placeholder_green">#c8e6c9</color>
+    <color name="color_placeholder_blue">#bbdefb</color>
+    <color name="color_placeholder_indigo">#c5cae9</color>
+    <color name="color_placeholder_purple">#e1bee7</color>
 
     <color name="colorTransparent">#00000000</color>
 </resources>
