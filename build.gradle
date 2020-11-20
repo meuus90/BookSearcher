@@ -4,6 +4,7 @@ buildscript {
         gradle_version = '4.0.1'
         ktlint_version = '8.2.0'
         jetifier_version = '1.0.0-beta10'
+        fabric_version = '1.31.2'
         mannodermaus_junit5_version = '1.6.0.0'
 
         // kotlin
@@ -58,6 +59,7 @@ buildscript {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+        maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
@@ -66,6 +68,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-allopen:$kotlin_version"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktlint_version"
         classpath "com.android.tools.build.jetifier:jetifier-processor:$jetifier_version"
+        classpath "io.fabric.tools:gradle:$fabric_version"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$mannodermaus_junit5_version"
     }
 }
