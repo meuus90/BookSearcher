@@ -171,12 +171,12 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // unit test
-    testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation "org.mockito:mockito-inline:$mockito_version"
     testImplementation "androidx.arch.core:core-testing:$androidx_core_testing_version"
+    testImplementation 'com.google.truth:truth:1.0.1'
 
     // androidx common
     implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
