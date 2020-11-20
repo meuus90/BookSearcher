@@ -23,7 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 
 @ObsoleteCoroutinesApi
-@OptIn(ExperimentalCoroutinesApi::class)
+@ExperimentalCoroutinesApi
 @ExtendWith(MockKExtension::class)
 @RunWith(MockitoJUnitRunner::class)
 class BooksViewModelTest : TestWatcher() {

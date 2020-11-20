@@ -12,7 +12,6 @@ import com.meuus90.booksearcher.test_util_kit.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
@@ -23,8 +22,6 @@ import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 
-@ExperimentalPagingApi
-@ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
 @ExtendWith(MockKExtension::class)
 @RunWith(MockitoJUnitRunner::class)
@@ -45,6 +42,7 @@ class BooksRepositoryTest : TestWatcher() {
 
     private val flow = flowOf(PagingData.empty<BookItem>())
 
+    @OptIn(ExperimentalPagingApi::class)
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
@@ -57,6 +55,7 @@ class BooksRepositoryTest : TestWatcher() {
     fun tearDown() {
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     @Test
     fun bookRepositoryTest() {
         runBlockingTest {

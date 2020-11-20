@@ -55,14 +55,18 @@ class BooksPageKeyedMediator(
 
             val response = daumAPI.getBookListSus(
                 query = bookSchema.query,
-                sort = bookSchema.sort.name,
-                target = bookSchema.target.name,
+                sort = bookSchema.sort.queryStr,
+                target = bookSchema.target.queryStr,
                 size = AppConfig.remotePagingSize,
                 page = loadKey
             )
 
-            if (response.meta.total_count == 0)
+            if (response.meta.total_count == 0) {
+                db.withTransaction {
+                    postDao.clear()
+                }
                 return MediatorResult.Error(EmptyResultException())
+            }
 
             db.withTransaction {
                 postDao.insert(response.documents)

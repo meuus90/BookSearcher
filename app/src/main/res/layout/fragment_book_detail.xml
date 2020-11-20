@@ -37,6 +37,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_back"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -70,14 +71,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/tv_next"
         app:layout_constraintTop_toBottomOf="@+id/appbar_search">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/v_contents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/iv_thumbnail"
@@ -88,6 +91,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/placeholder0" />
+
+            <ImageView
+                android:id="@+id/iv_thumbs_up_center"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_favorite"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
+                app:layout_constraintEnd_toEndOf="@+id/iv_thumbnail"
+                app:layout_constraintStart_toStartOf="@+id/iv_thumbnail"
+                app:layout_constraintTop_toTopOf="@+id/iv_thumbnail"
+                app:tint="@color/colorWhite"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_title"
@@ -177,7 +194,7 @@
         android:id="@+id/tv_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorEditTextBg"
+        android:background="@color/colorPrimaryLight"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:paddingTop="15dp"
@@ -186,4 +203,10 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorLine"
+        app:layout_constraintTop_toTopOf="@+id/tv_next" />
 </androidx.constraintlayout.widget.ConstraintLayout>

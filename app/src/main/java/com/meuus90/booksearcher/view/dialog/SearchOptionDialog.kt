@@ -11,7 +11,7 @@ import com.meuus90.booksearcher.model.schema.book.BookRequest
 import kotlinx.android.synthetic.main.dialog_search_option.*
 
 class SearchOptionDialog(
-    val bookRequest: BookRequest,
+    private val bookRequest: BookRequest,
     val onApply: (bookRequest: BookRequest) -> Unit
 ) : DialogFragment() {
     override fun onStart() {
@@ -30,17 +30,17 @@ class SearchOptionDialog(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        v_doc_sort_radio_group.check(bookRequest.sort.idRes)
-        v_search_target_radio_group.check(bookRequest.target.idRes)
+        v_doc_sort_radio_group.check(bookRequest.sort.radioBtnResId)
+        v_search_target_radio_group.check(bookRequest.target.radioBtnResId)
 
-        v_doc_sort_radio_group.setOnCheckedChangeListener { radioGroup, idRes ->
-            BookRequest.SortType.values().find { it.idRes == idRes }?.let {
+        v_doc_sort_radio_group.setOnCheckedChangeListener { _, idRes ->
+            BookRequest.SortType.values().find { it.radioBtnResId == idRes }?.let {
                 bookRequest.sort = it
             }
         }
 
-        v_search_target_radio_group.setOnCheckedChangeListener { radioGroup, idRes ->
-            BookRequest.TargetType.values().find { it.idRes == idRes }?.let {
+        v_search_target_radio_group.setOnCheckedChangeListener { _, idRes ->
+            BookRequest.TargetType.values().find { it.radioBtnResId == idRes }?.let {
                 bookRequest.target = it
             }
         }

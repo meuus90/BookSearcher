@@ -71,7 +71,6 @@ android {
 
     productFlavors {
         prod {
-            dimension "default"
             manifestPlaceholders = [appNameGradle: "@string/app_name"]
             manifestPlaceholders = [appLabel: "@string/app_name"]
 
@@ -146,32 +145,20 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    // kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // unit test
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
-
-    testImplementation "junit:junit:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_jupiter_version"
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit_vintage_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_version"
+    testImplementation "androidx.arch.core:core-testing:$androidx_core_testing_version"
 
-    testImplementation "de.mannodermaus.junit5:android-test-core:$mannodermaus_junit5_version"
-
-    testImplementation "androidx.test:core:$androidx_test_version"
-    testImplementation "androidx.test:runner:$androidx_test_version"
-    testImplementation "androidx.test:rules:$androidx_test_version"
-    testImplementation "androidx.test.ext:junit:$androidx_junit_version"
-    testImplementation 'io.mockk:mockk:1.10.2'
-    testImplementation 'io.mockk:mockk-android:1.10.2'
-    testImplementation 'org.mockito:mockito-inline:3.5.13'
-    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
-    testImplementation 'com.google.truth:truth:1.0.1'
-    testImplementation "androidx.test.espresso:espresso-core:$androidx_espresso_version"
-
+    // androidx common
     implementation "androidx.core:core-ktx:$androidx_core_ktx_version"
     implementation "androidx.appcompat:appcompat:$androidx_appcompat_version"
     implementation "androidx.annotation:annotation:$androidx_annotation_version"
@@ -179,50 +166,45 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout_version"
     implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview_version"
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$arch_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$arch_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-extensions:$arch_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$arch_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$arch_lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$arch_lifecycle_version"
+    // androidx lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$androidx_lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$androidx_lifecycle_version"
 
-    testImplementation "androidx.arch.core:core-testing:$arch_core_testing_version"
-    testImplementation "androidx.room:room-testing:$arch_room_version"
+    // androidx room
+    implementation "androidx.room:room-runtime:$androidx_room_version"
+    implementation "androidx.room:room-ktx:$androidx_room_version"
+    kapt "androidx.room:room-compiler:$androidx_room_version"
 
-    // room
-    implementation "androidx.room:room-runtime:$arch_room_version"
-    implementation "androidx.room:room-ktx:$arch_room_version"
-    annotationProcessor "androidx.room:room-compiler:$arch_room_version"
-    kapt "androidx.room:room-compiler:$arch_room_version"
+    // androidx paging
+    implementation "androidx.paging:paging-runtime-ktx:$androidx_paging_version"
 
-    // paging
-    implementation "androidx.paging:paging-runtime-ktx:$arch_paging_version"
-    testImplementation "androidx.paging:paging-common-ktx:$arch_paging_version"
-
-    // dependency injection
+    // dagger - dependency injection
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // material support
     implementation "com.google.android.material:material:$design_support_version"
 
-    // rest api
+    // rest api connection
     implementation "com.squareup.retrofit2:retrofit:$retrofit2_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit2_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp3_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3_version"
 
-    // image cache
+    // image loader
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "com.github.bumptech.glide:annotations:$glide_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
-    // log
+    // log printer
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "com.orhanobut:logger:$logger_version"
 }
