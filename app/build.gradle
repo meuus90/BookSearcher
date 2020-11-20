@@ -171,6 +171,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // unit test
+    testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_jupiter_version"
     testImplementation "io.mockk:mockk:$mockk_version"
