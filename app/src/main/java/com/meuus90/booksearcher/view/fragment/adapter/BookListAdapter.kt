@@ -17,7 +17,7 @@ import com.meuus90.booksearcher.model.schema.book.BookItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_book.view.*
 
-class BookListAdapter(val doOnClick: (position: Int, item: BookItem, sharedView: View, thumbsUpView: View) -> Unit) :
+class BookListAdapter(val doOnClick: (item: BookItem, sharedView: View) -> Unit) :
     PagingDataAdapter<BookItem, BaseViewHolder<BookItem>>(DIFF_CALLBACK) {
     companion object {
         private val PAYLOAD_TITLE = Any()
@@ -88,7 +88,7 @@ class BookListAdapter(val doOnClick: (position: Int, item: BookItem, sharedView:
                 )
 
                 v_root.setOnClickListener {
-                    adapter.doOnClick(position, item, iv_thumbnail, iv_thumbs_up)
+                    adapter.doOnClick(item, iv_thumbnail)
                 }
             }
         }

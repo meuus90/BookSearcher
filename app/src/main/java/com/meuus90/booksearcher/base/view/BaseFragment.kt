@@ -3,6 +3,7 @@ package com.meuus90.booksearcher.base.view
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.meuus90.booksearcher.di.Injectable
 
@@ -30,5 +31,10 @@ open class BaseFragment : Fragment(), Injectable {
 
     internal fun hideKeyboard() {
         baseActivity.hideKeyboard()
+    }
+    
+    internal fun showToast(message: String) {
+        val toast = Toast.makeText(context, message, Toast.LENGTH_LONG)
+        toast?.show()
     }
 }

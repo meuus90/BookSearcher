@@ -1,12 +1,15 @@
 package com.meuus90.booksearcher.view.dialog
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import com.meuus90.booksearcher.R
-import com.meuus90.booksearcher.base.view.ext.setDefaultWindowTheme
 import com.meuus90.booksearcher.model.schema.book.BookRequest
 import kotlinx.android.synthetic.main.dialog_search_option.*
 
@@ -16,7 +19,17 @@ class SearchOptionDialog(
 ) : DialogFragment() {
     override fun onStart() {
         super.onStart()
-        dialog?.setDefaultWindowTheme()
+        dialog?.window?.apply {
+            setLayout(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            statusBarColor = Color.TRANSPARENT
+
+            setDimAmount(0.3f)
+        }
     }
 
     override fun onCreateView(

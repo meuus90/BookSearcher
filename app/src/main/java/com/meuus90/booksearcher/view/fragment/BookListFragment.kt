@@ -2,6 +2,8 @@ package com.meuus90.booksearcher.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.transition.Fade
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -29,7 +31,7 @@ import com.meuus90.booksearcher.model.schema.book.BookRequest
 import com.meuus90.booksearcher.view.dialog.SearchOptionDialog
 import com.meuus90.booksearcher.view.fragment.BookDetailFragment.Companion.KEY_BOOK
 import com.meuus90.booksearcher.view.fragment.adapter.BookListAdapter
-import com.meuus90.booksearcher.viewmodel.book.BooksViewModel
+import com.meuus90.booksearcher.viewmodel.book.BookListViewModel
 import kotlinx.android.synthetic.main.fragment_book_list.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -40,7 +42,7 @@ class BookListFragment : BaseFragment() {
     private var acvView by autoCleared<View>()
 
     @Inject
-    internal lateinit var bookViewModel: BooksViewModel
+    internal lateinit var bookListViewModel: BookListViewModel
 
     private var searchSchema = BookRequest()
 
@@ -65,6 +67,8 @@ class BookListFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         if (!isInitialized) {
             isInitialized = true
+            bookListViewModel.initialize()
+
             initAppBar()
             initViewsListener()
             initAdapter()
@@ -80,7 +84,7 @@ class BookListFragment : BaseFragment() {
         }
     }
 
-    private val adapter = BookListAdapter { position, item, sharedView, thumbsUpView ->
+    private val adapter = BookListAdapter { item, sharedView ->
         val bundle = Bundle()
         bundle.putParcelable(KEY_BOOK, item)
 
@@ -138,6 +142,21 @@ class BookListFragment : BaseFragment() {
                 false
             }
         }
+
+        et_search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                s?.let {
+                    if (searchSchema.query != it.toString())
+                        updateBooksByDebounce()
+                }
+            }
+        })
     }
 
     private fun updateBooks() {
@@ -145,7 +164,14 @@ class BookListFragment : BaseFragment() {
 
         et_search.text?.trim().toString().let {
             searchSchema.query = it
-            bookViewModel.postBookSchema(searchSchema)
+            bookListViewModel.postBookSchema(searchSchema)
+        }
+    }
+
+    private fun updateBooksByDebounce() {
+        et_search.text?.trim().toString().let {
+            searchSchema.query = it
+            bookListViewModel.postBookSchemaWithDebounce(searchSchema)
         }
     }
 
@@ -161,7 +187,7 @@ class BookListFragment : BaseFragment() {
         recyclerView.layoutManager = layoutManager
 
         lifecycleScope.launchWhenCreated {
-            bookViewModel.books
+            bookListViewModel.books
                 .collectLatest {
                     adapter.submitData(it)
                 }
@@ -195,6 +221,12 @@ class BookListFragment : BaseFragment() {
     private fun updateErrorUI(state: LoadState.Error) {
         val error = state.error
         if (error is BooksPageKeyedMediator.EmptyResultException) {
+            showToast(
+                getString(
+                    R.string.network_message_no_item_title,
+                    searchSchema.query
+                )
+            )
             showErrorView(
                 R.drawable.ic_warning,
                 getString(
@@ -204,6 +236,7 @@ class BookListFragment : BaseFragment() {
                 getString(R.string.network_message_no_item_message)
             )
         } else {
+            showToast(getString(R.string.network_message_error_title))
             showErrorView(
                 R.drawable.ic_error,
                 getString(R.string.network_message_error_title),

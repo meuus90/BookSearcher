@@ -10,7 +10,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.meuus90.booksearcher.BuildConfig
 import com.meuus90.booksearcher.R
 
 
@@ -61,7 +60,6 @@ fun ImageView.loadGlideImage(
             .priority(Priority.IMMEDIATE)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .skipMemoryCache(true)
-            .signature(IntegerVersionSignature(BuildConfig.VERSION_CODE))
             .override(Target.SIZE_ORIGINAL)
             .onlyRetrieveFromCache(loadOnlyFromCache)
 
