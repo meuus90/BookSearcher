@@ -3,6 +3,10 @@ Android application for search books with daum API.
 
   * [소스 코드 링크 GitHub](https://github.com/meuus90/BookSearcher)
 
+    * 빌드 타입을 debug로 빌드 시 제약 없이 빌드 가능. (devDebug, prodDebug)
+
+    * 빌드 타입을 release로 빌드 시 임의의 keystore 생성 후 keystore.properties 내용 변경 필요. (devRelease, prodRelease)
+
 
   * Product APK 받기
 
