@@ -84,7 +84,7 @@ Android application for search books with daum API.
 
   * 아키텍쳐 디자인 패턴은 MVVM 패턴을 적용하였다.
 
-    * 각 컴포넌트들은 필요시 다른 컴포넌트를 Inject하여 사용하였다. [3. Dependency Injection](#3-dependency-injection)
+    * 각 컴포넌트들은 필요 시 다른 컴포넌트를 Inject하여 사용하였다. [3. Dependency Injection](#3-dependency-injection)
 
   * BookListFragment의 RecyclerView에 페이징 기능을 적용하였다.
 
@@ -114,7 +114,7 @@ Android application for search books with daum API.
 
   * 주요 기능
 
-    * develop branch에서 commit push 완료시 실행
+    * develop branch에서 commit push 완료 시 실행
 
     * JDK 1.8 테스트 환경 셋업
 
