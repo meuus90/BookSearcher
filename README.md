@@ -1,12 +1,17 @@
 # BookSearcher
 Android application for search books with daum API.
 
+  * [소스 코드 링크 GitHub](https://github.com/meuus90/BookSearcher)
+
+
   * Product APK 받기
-    * [BookSearcher-prodRelease-1.0.0.apk](app/prod/release/BookSearcher-prodRelease-1.0.0.apk)
+
+    * [APK 링크 GitHub](https://github.com/meuus90/BookSearcher/blob/master/BookSearcher-prodRelease-1.0.0.apk)
 
     * [APK 링크 Google Drive](https://drive.google.com/file/d/1W3Vma3zOEoniKW37YxZlmaXLKA3DX-g6/view?usp=sharing)
 
-    * 실행 영상 YouTube 아래 이미지 클릭
+
+  * 실행 영상 YouTube 아래 이미지 클릭
 
     [![실행 영상](http://img.youtube.com/vi/BalUdEynUrk/0.jpg)](https://youtu.be/BalUdEynUrk?t=0s)
 
